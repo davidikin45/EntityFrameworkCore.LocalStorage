@@ -6,7 +6,10 @@ using Microsoft.AspNetCore.Blazor.Http;
 using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 
 namespace BethanysPieShopHRM.ClientApp
 {
@@ -26,19 +29,23 @@ namespace BethanysPieShopHRM.ClientApp
             //    options.UseInMemoryDatabase(databaseName: "db").ForBlazorWebAssembly();
             //});
 
-            //HttpClient Factory does not work with Server side blazor
+            //Spinner
+            services.AddScoped<ISpinnerService, SpinnerService>();
+            services.AddScoped<BlazorDisplaySpinnerAutomaticallyHttpMessageHandler>();
+            Type MonoWasmHttpMessageHandlerType = Assembly.Load("WebAssembly.Net.Http").GetType("WebAssembly.Net.Http.HttpClient.WasmHttpMessageHandler");
+            services.AddScoped(MonoWasmHttpMessageHandlerType);
+
+            //HttpClient Factory does not work with Client side blazor
+            services.Remove(services.Single(x => x.ServiceType == typeof(HttpClient)));
+
             services.AddScoped<HttpClient>(s =>
             {
                 var blazorDisplaySpinnerAutomaticallyHttpMessageHandler = s.GetRequiredService<BlazorDisplaySpinnerAutomaticallyHttpMessageHandler>();
-                blazorDisplaySpinnerAutomaticallyHttpMessageHandler.InnerHandler = new WebAssemblyHttpMessageHandler();
+                blazorDisplaySpinnerAutomaticallyHttpMessageHandler.InnerHandler = (HttpMessageHandler)s.GetService(MonoWasmHttpMessageHandlerType);
 
                 var client = new HttpClient(blazorDisplaySpinnerAutomaticallyHttpMessageHandler) { BaseAddress = new System.Uri("https://localhost:44340/") };
                 return client;
             });
-
-            //Spinner
-            services.AddScoped<ISpinnerService, SpinnerService>();
-            services.AddScoped<BlazorDisplaySpinnerAutomaticallyHttpMessageHandler>();
         }
 
         public void Configure(IComponentsApplicationBuilder app)

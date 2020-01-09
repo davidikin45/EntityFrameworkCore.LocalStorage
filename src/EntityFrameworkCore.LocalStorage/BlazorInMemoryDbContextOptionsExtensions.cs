@@ -41,6 +41,11 @@ namespace EntityFrameworkCore.LocalStorage
             return optionsBuilder.ReplaceService<IModelSource, BlazorModelSource>();
         }
 
+        public static DbContextOptionsBuilder<TContext> EnableSeedData<TContext>([NotNull] this DbContextOptionsBuilder<TContext> optionsBuilder) where TContext : DbContext
+        {
+            return optionsBuilder.ReplaceService<IFileContextStoreCache, LocalStorageStoreCache>();
+        }
+
         public static DbContextOptionsBuilder EnableSeedData([NotNull] this DbContextOptionsBuilder optionsBuilder)
         {
             return optionsBuilder.ReplaceService<IFileContextStoreCache, LocalStorageStoreCache>();
