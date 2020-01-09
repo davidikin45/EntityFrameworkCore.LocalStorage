@@ -6,7 +6,7 @@ using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Blazored.LocalStorage;
 
-namespace EntityFrameworkCore.LocalStorage
+namespace EntityFrameworkCore.LocalStorage.FileManager
 {
     class LocalStorageFileManager
     {

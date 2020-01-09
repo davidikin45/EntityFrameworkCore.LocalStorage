@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <ApplicationIcon />
+    <RazorLangVersion>3.0</RazorLangVersion>
+    <OutputType>Library</OutputType>
+    <StartupObject />
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="IdentityModel" Version="4.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="3.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="3.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BethanysPieShopHRM.ComponentsLibrary\BethanysPieShopHRM.ComponentsLibrary.csproj" />
+    <ProjectReference Include="..\BethanysPieShopHRM.Shared\BethanysPieShopHRM.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

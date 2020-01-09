@@ -1,3 +1,5 @@
+using EntityFrameworkCore.LocalStorage.NewFolder;
+using FileContextCore.Storage.Internal;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -37,6 +39,11 @@ namespace EntityFrameworkCore.LocalStorage
         public static DbContextOptionsBuilder ForBlazorWebAssembly([NotNull] this DbContextOptionsBuilder optionsBuilder)
         {
             return optionsBuilder.ReplaceService<IModelSource, BlazorModelSource>();
+        }
+
+        public static DbContextOptionsBuilder EnableSeedData([NotNull] this DbContextOptionsBuilder optionsBuilder)
+        {
+            return optionsBuilder.ReplaceService<IFileContextStoreCache, LocalStorageStoreCache>();
         }
     }
 }

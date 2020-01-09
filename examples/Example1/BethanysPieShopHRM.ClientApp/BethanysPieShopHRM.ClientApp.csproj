@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <RazorLangVersion>3.0</RazorLangVersion>
+    <RootNamespace>BethanysPieShopHRM.ClientApp</RootNamespace>
+    <BlazorLinkOnBuild>false</BlazorLinkOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Blazored.LocalStorage" Version="2.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="3.1.0-preview1.19508.20" />
+    <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="3.1.0-preview1.19508.20" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Blazor.HttpClient" Version="3.1.0-preview1.19508.20" />
+    <PackageReference Include="Microsoft.AspNetCore.Blazor.DevServer" Version="3.1.0-preview1.19508.20" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\EntityFrameworkCore.LocalStorage\EntityFrameworkCore.LocalStorage.csproj" />
+    <ProjectReference Include="..\BethanysPieShopHRM.ComponentsLibrary\BethanysPieShopHRM.ComponentsLibrary.csproj" />
+    <ProjectReference Include="..\BethanysPieShopHRM.Shared\BethanysPieShopHRM.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

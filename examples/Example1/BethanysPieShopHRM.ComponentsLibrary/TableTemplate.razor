@@ -1,0 +1,35 @@
+﻿@typeparam TItem
+
+@{
+    var smallClass = IsSmall ? "table-sm" : "";
+}
+
+<table class="table @smallClass">
+    <thead>
+        <tr>
+            <th class="w-auto">
+                <button class="btn btn-sm" @onclick="e => IsSmall = !IsSmall">
+                    <i class="fas fa-arrows-alt-v"></i>
+                </button>
+            </th>
+            @TableHeader
+        </tr>
+
+    </thead>
+    <tbody>
+        @foreach (var item in Items)
+        {
+            var rowClass = item.HighLightRow ? "table-success" : "";
+            <tr @key="item" class="@rowClass">
+                @RowTemplate(item)
+            </tr>
+
+            @if (item.ShowChildTemplate)
+            {
+                <tr>
+                    @ChildTemplate(item)
+                </tr>
+            }
+        }
+    </tbody>
+</table>

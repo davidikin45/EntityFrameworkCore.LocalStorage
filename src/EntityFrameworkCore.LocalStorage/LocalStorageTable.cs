@@ -15,11 +15,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using EntityFrameworkCore.LocalStorage.FileManager;
 
 namespace EntityFrameworkCore.LocalStorage
 {
+    public interface IFileContextTableExists
+    {
+        public bool Exists(IUpdateEntry entry);
+    }
 
-    public class LocalStorageTable<TKey> : IFileContextTable
+    public class LocalStorageTable<TKey> : IFileContextTable, IFileContextTableExists
     {
         private readonly Microsoft.EntityFrameworkCore.ChangeTracking.Internal.IPrincipalKeyValueFactory<TKey> _keyValueFactory;
         private readonly bool _sensitiveLoggingEnabled;
@@ -117,6 +122,12 @@ namespace EntityFrameworkCore.LocalStorage
             _rows.Add(CreateKey(entry), row);
 
             BumpValueGenerators(row);
+        }
+
+        public bool Exists(IUpdateEntry entry)
+        {
+            var key = CreateKey(entry);
+            return _rows.ContainsKey(key);
         }
 
         /// <summary>

@@ -1,0 +1,52 @@
+﻿@page "/employeeoverview"
+@inherits EmployeeOverviewBase
+@attribute [Authorize(Policy = BethanysPieShopHRM.Shared.Policies.CanManageEmployees )]
+
+<h1 class="page-title">All employees</h1>
+
+@if (Employees == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <TableTemplate Items="Employees" TItem="EmployeeModel" Context="Employee">
+        <TableHeader>
+            <th>Employee ID</th>
+            <th>First name</th>
+            <th>Last name</th>
+            <th></th>
+        </TableHeader>
+        <RowTemplate>
+            <td><img src="@($"https://gillcleerenpluralsight.blob.core.windows.net/person/{Employee.EmployeeId}-small.jpg")" class="rounded-circle" /></td>
+            <td>@Employee.EmployeeId</td>
+            <td>@Employee.FirstName</td>
+            <td>@Employee.LastName</td>
+            <td>
+                <a href="@($"Employeedetail/{Employee.EmployeeId}")"
+                   class="btn btn-primary table-btn">
+                    <i class="fas fa-info-circle"></i>
+                </a>
+                <a href="@($"Employeeedit/{Employee.EmployeeId}")"
+                   class="btn btn-primary table-btn">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <button href="" class="btn btn-primary table-btn"
+                   @onclick="e => Employee.ShowBenefits = !Employee.ShowBenefits">
+                    <i class="fas fa-thumbs-up"></i>
+                </button>
+            </td>
+        </RowTemplate>
+        <ChildTemplate>
+            <td colspan="5">
+                <BenefitSelector Employee="Employee"
+                                 OnPremiumToggle="@(b => Employee.HasPremiumBenefits = b)" />
+            </td>
+        </ChildTemplate>
+    </TableTemplate>
+}
+
+<button @onclick="@QuickAddEmployee" class="btn btn-dark table-btn quick-add-btn">&nbsp;&nbsp;+&nbsp;&nbsp;</button>
+
+<AddEmployeeDialog @ref="AddEmployeeDialog"
+                   CloseEventCallback="@AddEmployeeDialog_OnDialogClose"></AddEmployeeDialog>

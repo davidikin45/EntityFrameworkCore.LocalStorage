@@ -1,0 +1,23 @@
+﻿<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            <CascadingValue Value="theme" IsFixed="true">
+                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(ServerMainLayout)">
+                    <NotAuthorized>
+                        <h1>Sorry, you're not authorized to view this page.</h1>
+                        <p>You may want to try logging in (as someone with the necessary authorization).</p>
+                    </NotAuthorized>
+                </AuthorizeRouteView>
+            </CascadingValue>
+        </Found>
+        <NotFound>
+            <LayoutView Layout="@typeof(ServerMainLayout)">
+                <p>Sorry, there's nothing at this address.</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>
+
+@code {
+    private Theme theme = new Theme();
+}

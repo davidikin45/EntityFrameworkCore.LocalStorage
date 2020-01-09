@@ -18,7 +18,6 @@ namespace EntityFrameworkCore.LocalStorage
 
         protected override IModel CreateModel(DbContext context, IConventionSetBuilder conventionSetBuilder)
         {
-
             var conventions = conventionSetBuilder.CreateConventionSet();
 
             var c1 = conventions.PropertyAddedConventions.Where(c => c.GetType() == typeof(NonNullableReferencePropertyConvention)).ToList();
@@ -34,7 +33,7 @@ namespace EntityFrameworkCore.LocalStorage
             var internalModelBuilder = new InternalModelBuilder(blazorModel);
             internalModelBuilder.Metadata.SetProductVersion(ProductInfo.GetVersion());
             var modelBuilder = new ModelBuilder(blazorModel);
-
+            Dependencies.ModelCustomizer.Customize(modelBuilder, context);
             return modelBuilder.FinalizeModel();
         }
     }

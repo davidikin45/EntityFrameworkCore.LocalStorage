@@ -1,0 +1,16 @@
+﻿<Router AppAssembly="@typeof(App).Assembly">
+    <Found Context="routeData">
+        <CascadingValue Value="theme" IsFixed="true">
+            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        </CascadingValue>
+    </Found>
+    <NotFound>
+        <LayoutView Layout="@typeof(MainLayout)">
+            <p>Sorry, there's nothing at this address.</p>
+        </LayoutView>
+    </NotFound>
+</Router>
+
+@code {
+    private Theme theme = new Theme();
+}

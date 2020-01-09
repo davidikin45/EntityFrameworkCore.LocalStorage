@@ -15,6 +15,8 @@ PM> Install-Package EntityFrameworkCore.LocalStorage
 ```
 > dotnet add package EntityFrameworkCore.LocalStorage
 ```
+## Example
+* [Local Storage Example](https://eflocalstorage.azurewebsites.net)
 
 ## Usage
 

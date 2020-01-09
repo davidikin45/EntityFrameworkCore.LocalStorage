@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="NewFolder\**" />
+    <EmbeddedResource Remove="NewFolder\**" />
+    <None Remove="NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="3.1.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Policies\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BethanysPieShopHRM.ComponentsLibrary\BethanysPieShopHRM.ComponentsLibrary.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,49 @@
+﻿@using BethanysPieShopHRM.Shared
+@inherits BenefitSelectorBase
+
+@if (Benefits == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+<div class="row">
+    <div class="col-md-8">
+        <TableTemplate Items="Benefits" IsSmall="true" 
+                       TItem="BenefitModel" Context="benefit">
+
+            <TableHeader>
+                <th class="w-auto">Benefit</th>
+                <th class="w-25">Start date</th>
+                <th class="w-25">End date</th>
+            </TableHeader>
+            <RowTemplate>
+                <td>
+                    <input type="checkbox" checked="@benefit.Selected"
+                           @onchange="e => CheckBoxChanged(e, benefit)" />
+                </td>
+                <td>@benefit.Description</td>
+
+                @if (benefit.Selected)
+                {
+                    <td>@benefit.StartDate</td>
+                    <td>
+                        <DateField @bind-Date="benefit.EndDate" />
+                    </td>
+                }
+                else
+                {
+                    <td></td>
+                    <td></td>
+                }
+            </RowTemplate>
+        </TableTemplate>
+    </div>
+    <div class="col-md-4 mt-1">
+        <button class="btn btn-primary" disabled="@SaveButtonDisabled"
+                @onclick="SaveClick">
+            Save
+        </button>
+    </div>
+</div>
+}
