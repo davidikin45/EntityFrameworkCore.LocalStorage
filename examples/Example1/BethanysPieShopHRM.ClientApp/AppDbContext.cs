@@ -23,8 +23,6 @@ namespace BethanysPieShopHRM.ClientApp
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.UseIdentityColumns();
-
             //seed categories
             modelBuilder.Entity<Country>().HasData(new Country { CountryId = 1, Name = "Belgium" });
             modelBuilder.Entity<Country>().HasData(new Country { CountryId = 2, Name = "Germany" });
