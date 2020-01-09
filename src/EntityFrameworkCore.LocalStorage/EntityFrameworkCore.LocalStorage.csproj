@@ -2,25 +2,22 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <SignAssembly Condition="'$(OS)' == 'Windows_NT'">false</SignAssembly>
-    <AssemblyOriginatorKeyFile>EntityFrameworkCore.LocalStorageCert.pfx</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Version>1.00</Version>
+    <Version>1.0.1</Version>
     <Company></Company>
     <Authors>David Ikin</Authors>
     <Description>Blazor WebAssembly LocalStorage</Description>
     <Copyright>(c) David Ikin</Copyright>
     <Title>EntityFrameworkCore.LocalStorage</Title>
     <PackageLicenseUrl></PackageLicenseUrl>
-    <PackageIconUrl>https://morrisj.net/storage/morrisjdev_logo.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/davidikin45/EntityFrameworkCore.LocalStorage</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>Blazor WebAssembly LocalStorage EntityFrameworkCore</PackageTags>
     <PackageProjectUrl>https://github.com/morrisjdev/EntityFrameworkCore.LocalStorage</PackageProjectUrl>
     <NeutralLanguage>en-US</NeutralLanguage>
     <DelaySign>false</DelaySign>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.0.0</FileVersion>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <FileVersion>1.0.1.0</FileVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
