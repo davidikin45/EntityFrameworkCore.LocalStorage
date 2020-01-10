@@ -26,6 +26,11 @@ namespace BethanysPieShopHRM.ClientApp
 
             //services.AddDbContext<AppDbContext>(options =>
             //{
+            //    options.UseLocalStorageDatabase(services.GetJSRuntime(), databaseName: "db", password: "password");
+            //});
+
+            //services.AddDbContext<AppDbContext>(options =>
+            //{
             //    options.UseInMemoryDatabase(databaseName: "db").ForBlazorWebAssembly();
             //});
 

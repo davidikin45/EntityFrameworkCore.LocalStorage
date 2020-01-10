@@ -34,11 +34,12 @@ namespace EntityFrameworkCore.LocalStorage
             IJSRuntime JSRuntime,
             string serializer = "json",
             string databaseName = "",
+            string password = "",
             [CanBeNull] FileContextDatabaseRoot databaseRoot = null,
             [CanBeNull] Action<FileContextDbContextOptionsBuilder> inMemoryOptionsAction = null)
             where TContext : DbContext
             => (DbContextOptionsBuilder<TContext>)UseLocalStorageDatabase(
-                (DbContextOptionsBuilder)optionsBuilder, JSRuntime, serializer, databaseName, databaseRoot, inMemoryOptionsAction);
+                (DbContextOptionsBuilder)optionsBuilder, JSRuntime, serializer, databaseName, password, databaseRoot, inMemoryOptionsAction);
 
         public static DbContextOptionsBuilder UseLocalStorageDatabaseConnectionString(
             [NotNull] this DbContextOptionsBuilder optionsBuilder,
@@ -55,7 +56,8 @@ namespace EntityFrameworkCore.LocalStorage
             return UseLocalStorageDatabase(optionsBuilder,
                 JSRuntime,
                 connectionStringSplitted.GetValueOrDefault("serializer"),
-                connectionStringSplitted.GetValueOrDefault("databasename")
+                connectionStringSplitted.GetValueOrDefault("databasename"),
+                connectionStringSplitted.GetValueOrDefault("password")
                 , databaseRoot, inMemoryOptionsAction);
         }
 
@@ -64,14 +66,18 @@ namespace EntityFrameworkCore.LocalStorage
             IJSRuntime JSRuntime,
             string serializer = "json",
             string databaseName = "",
+            string password = "",
             [CanBeNull] FileContextDatabaseRoot databaseRoot = null,
             [CanBeNull] Action<FileContextDbContextOptionsBuilder> inMemoryOptionsAction = null)
         {
+
+            var filemanager = string.IsNullOrEmpty(password) ? "default" : $"encrypted:{password}";
+
             var dbServices = new ServiceCollection();
   
             dbServices.AddEntityFrameworkLocalStorageDatabase(JSRuntime);
 
-            optionsBuilder.UseInternalServiceProvider(dbServices.BuildServiceProvider()).UseFileContextDatabase(serializer, "localstorage", databaseName, null, databaseRoot, inMemoryOptionsAction);
+            optionsBuilder.UseInternalServiceProvider(dbServices.BuildServiceProvider()).UseFileContextDatabase(serializer, filemanager, databaseName, null, databaseRoot, inMemoryOptionsAction);
 
             return optionsBuilder;
         }

@@ -30,6 +30,14 @@ services.AddDbContext<AppDbContext>(options =>
 ```
 services.AddDbContext<AppDbContext>(options =>
 {
+	//As the encryption happens on the client side this is NOT secure but is handy for preventing users from altering data via browser tools.
+	options.UseLocalStorageDatabase(services.GetJSRuntime(), databaseName: "db", password: "password");
+});
+```
+
+```
+services.AddDbContext<AppDbContext>(options =>
+{
 	options.UseInMemoryDatabase(databaseName: "db").ForBlazorWebAssembly();
 });
 ```

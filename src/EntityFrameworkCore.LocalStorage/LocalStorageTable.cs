@@ -33,7 +33,7 @@ namespace EntityFrameworkCore.LocalStorage
         private readonly Dictionary<TKey, object[]> _rows;
         private readonly ISyncLocalStorageService _localStorage;
 
-        private LocalStorageFileManager fileManager;
+        private IFileManager fileManager;
         private ISerializer serializer;
         private string filetype;
 
@@ -302,7 +302,23 @@ namespace EntityFrameworkCore.LocalStorage
 
         private void InitFileManager()
         {
-            fileManager = new LocalStorageFileManager(_entityType, filetype, _options.DatabaseName, _localStorage);
+            string fmgr = _options.FileManager ?? "default";
+
+            if (fmgr.Length >= 9 && fmgr.Substring(0, 9) == "encrypted")
+            {
+                string password = "";
+
+                if (fmgr.Length > 9)
+                {
+                    password = fmgr.Substring(10);
+                }
+
+                fileManager = new EncryptedLocalStorageFileManager(_entityType, filetype, password, _options.DatabaseName, _localStorage);
+            }
+            else
+            {
+                fileManager = new LocalStorageFileManager(_entityType, filetype, _options.DatabaseName, _localStorage);
+            }
         }
 
         private Dictionary<TKey, object[]> Init()

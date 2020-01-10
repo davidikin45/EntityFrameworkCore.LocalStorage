@@ -8,14 +8,13 @@ using Blazored.LocalStorage;
 
 namespace EntityFrameworkCore.LocalStorage.FileManager
 {
-    class LocalStorageFileManager
+    class LocalStorageFileManager : IFileManager
     {
         private readonly object thisLock = new object();
 
         IEntityType type;
         private readonly string filetype;
         private readonly string databasename;
-        private readonly string _location;
         private readonly ISyncLocalStorageService localStorage;
 
         public LocalStorageFileManager(IEntityType _type, string _filetype, string _databasename, ISyncLocalStorageService localStorage)
