@@ -50,6 +50,10 @@ services.AddDbContext<AppDbContext>(options =>
 
 This project is licensed under the MIT License
 
+## Tools
+
+* [Chrome Local Storage Explorer](https://chrome.google.com/webstore/detail/local-storage-explorer/hglfomidogadbhelcfomenpieffpfaeb)
+
 ## Acknowledgments
 
 * [Blazor](https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor)
