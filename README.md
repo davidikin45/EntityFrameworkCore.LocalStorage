@@ -59,3 +59,4 @@ This project is licensed under the MIT License
 * [Blazor](https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor)
 * [FileContextCore](https://github.com/morrisjdev/FileContextCore)
 * [Blazored LocalStorage](https://github.com/Blazored/LocalStorage)
+* [Reshiru.Blazor.IndexedDB.Framework](https://github.com/Reshiru/Blazor.IndexedDB.Framework)

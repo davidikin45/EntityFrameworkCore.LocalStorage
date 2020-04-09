@@ -1,10 +1,7 @@
-using BethanysPieShopHRM.ClientApp;
 using BethanysPieShopHRM.ClientApp.Interceptors;
 using BethanysPieShopHRM.ClientApp.Services;
+using Blazor.IndexedDB.Framework;
 using EntityFrameworkCore.LocalStorage;
-using Microsoft.AspNetCore.Blazor.Http;
-using Microsoft.AspNetCore.Components.Builder;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
@@ -19,6 +16,9 @@ namespace BethanysPieShopHRM.ClientApp
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IIndexedDbFactory, IndexedDbFactory>();
+            services.AddSingleton<AppIndexedDb>(sp => sp.GetRequiredService<IIndexedDbFactory>().Create<AppIndexedDb>().Result);
+
             services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseLocalStorageDatabase(services.GetJSRuntime(), databaseName: "db");
@@ -41,6 +41,7 @@ namespace BethanysPieShopHRM.ClientApp
             services.AddScoped(MonoWasmHttpMessageHandlerType);
 
             //HttpClient Factory does not work with Client side blazor
+            services.AddBaseAddressHttpClient();
             services.Remove(services.Single(x => x.ServiceType == typeof(HttpClient)));
 
             services.AddScoped<HttpClient>(s =>
@@ -51,11 +52,8 @@ namespace BethanysPieShopHRM.ClientApp
                 var client = new HttpClient(blazorDisplaySpinnerAutomaticallyHttpMessageHandler) { BaseAddress = new System.Uri("https://localhost:44340/") };
                 return client;
             });
-        }
 
-        public void Configure(IComponentsApplicationBuilder app)
-        {
-            app.AddComponent<App>("app");
+
         }
     }
 }

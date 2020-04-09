@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  This file specifies which parts of the BCL or Blazor packages must not be
+  stripped by the IL Linker even if they aren't referenced by user code.
+-->
+<linker>
+  <assembly fullname="System.Core">
+    <!--
+      System.Linq.Expressions* is required by Json.NET and any 
+      expression.Compile caller. The assembly isn't stripped.
+    -->
+    <type fullname="System.Linq.Expressions*" />
+    <type fullname="System.Linq.Queryable*" />
+    <type fullname="System.Linq.Enumerable*" />
+    <type fullname="System.Linq.EnumerableRewriter*" />
+  </assembly>
+  
+  <assembly fullname="Microsoft.EntityFrameworkCore.Relational" />
+  <assembly fullname="Microsoft.EntityFrameworkCore" />
+</linker>
