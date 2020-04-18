@@ -9,7 +9,7 @@ namespace BethanysPieShopHRM.ClientApp
         public static async Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
-            new Startup().ConfigureServices(builder.Services);
+            new Startup().ConfigureServices(builder.Services, builder.HostEnvironment.BaseAddress);
             builder.RootComponents.Add<App>("app");
 
             var host = builder.Build();

@@ -14,7 +14,7 @@ namespace BethanysPieShopHRM.ClientApp
 
     public class Startup
     {
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services, string baseAddress)
         {
             services.AddSingleton<IIndexedDbFactory, IndexedDbFactory>();
             services.AddSingleton<AppIndexedDb>(sp => sp.GetRequiredService<IIndexedDbFactory>().Create<AppIndexedDb>().Result);
@@ -41,7 +41,7 @@ namespace BethanysPieShopHRM.ClientApp
             services.AddScoped(MonoWasmHttpMessageHandlerType);
 
             //HttpClient Factory does not work with Client side blazor
-            services.AddBaseAddressHttpClient();
+            services.AddSingleton(new HttpClient { BaseAddress = new Uri(baseAddress) });
             services.Remove(services.Single(x => x.ServiceType == typeof(HttpClient)));
 
             services.AddScoped<HttpClient>(s =>
