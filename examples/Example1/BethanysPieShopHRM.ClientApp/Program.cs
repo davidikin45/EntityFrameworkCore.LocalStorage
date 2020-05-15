@@ -9,7 +9,7 @@ namespace BethanysPieShopHRM.ClientApp
         public static async Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
-            new Startup().ConfigureServices(builder.Services, builder.HostEnvironment.BaseAddress);
+            new Startup().ConfigureServices(builder.Configuration, builder.Services, builder.HostEnvironment.BaseAddress);
             builder.RootComponents.Add<App>("app");
 
             var host = builder.Build();
@@ -18,7 +18,7 @@ namespace BethanysPieShopHRM.ClientApp
             using (var scope = host.Services.CreateScope())
             {
                 using var context = scope.ServiceProvider.GetService<AppDbContext>();
-                //context.Database.EnsureCreated();
+                context.Database.EnsureCreated();
             }
 
             await host.RunAsync();

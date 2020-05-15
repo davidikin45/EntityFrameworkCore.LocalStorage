@@ -1,4 +1,4 @@
-﻿# Entity Framework Core Local Storage + InMemory
+﻿# Entity Framework Core Local Storage
 
 [![nuget](https://img.shields.io/nuget/v/EntityFrameworkCore.LocalStorage.svg)](https://www.nuget.org/packages/Blazor.EntityFrameworkCore.LocalStorage/) ![Downloads](https://img.shields.io/nuget/dt/EntityFrameworkCore.LocalStorage.svg "Downloads")
 
@@ -32,13 +32,6 @@ services.AddDbContext<AppDbContext>(options =>
 {
 	//As the encryption happens on the client side this is NOT secure but is handy for preventing users from altering data via browser tools.
 	options.UseLocalStorageDatabase(services.GetJSRuntime(), databaseName: "db", password: "password");
-});
-```
-
-```
-services.AddDbContext<AppDbContext>(options =>
-{
-	options.UseInMemoryDatabase(databaseName: "db").ForBlazorWebAssembly();
 });
 ```
 
