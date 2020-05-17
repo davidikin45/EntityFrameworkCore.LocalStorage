@@ -39,6 +39,10 @@ services.AddDbContext<AppDbContext>(options =>
 <PropertyGroup>
   <BlazorWebAssemblyEnableLinking>true</BlazorWebAssemblyEnableLinking>
 </PropertyGroup>
+
+<ItemGroup>
+    <BlazorLinkerDescriptor Include="LinkerConfig.xml" />
+</ItemGroup>
 ```
 
 ```
