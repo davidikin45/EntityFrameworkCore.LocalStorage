@@ -1,5 +1,6 @@
 using BethanysPieShopHRM.ClientApp.Interceptors;
 using BethanysPieShopHRM.ClientApp.Services;
+using EntityFrameworkCore.LocalStorage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

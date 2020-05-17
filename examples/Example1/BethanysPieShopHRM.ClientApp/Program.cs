@@ -18,7 +18,7 @@ namespace BethanysPieShopHRM.ClientApp
             using (var scope = host.Services.CreateScope())
             {
                 using var context = scope.ServiceProvider.GetService<AppDbContext>();
-                context.Database.EnsureCreated();
+                await context.Database.EnsureCreatedAsync();
             }
 
             await host.RunAsync();

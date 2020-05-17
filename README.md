@@ -37,8 +37,19 @@ services.AddDbContext<AppDbContext>(options =>
 
 ```
 <PropertyGroup>
-  <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
+  <BlazorWebAssemblyEnableLinking>true</BlazorWebAssemblyEnableLinking>
 </PropertyGroup>
+```
+
+```
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  This file specifies which parts of the BCL or Blazor packages must not be
+  stripped by the IL Linker even if they aren't referenced by user code.
+-->
+<linker>
+  <assembly fullname="System.Core" /> 
+</linker>
 ```
 
 ## Authors

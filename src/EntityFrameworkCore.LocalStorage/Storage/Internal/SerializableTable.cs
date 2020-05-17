@@ -1,13 +1,11 @@
-using EntityFrameworkCore.LocalStorage.Serializer;
-using Blazored.LocalStorage;
-using FileContextCore.Infrastructure.Internal;
-using FileContextCore.Internal;
-using FileContextCore.Storage.Internal;
-using FileContextCore.ValueGeneration.Internal;
-using JetBrains.Annotations;
+﻿using EntityFrameworkCore.LocalStorage.StoreManager;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
+using Microsoft.EntityFrameworkCore.InMemory.Internal;
+using Microsoft.EntityFrameworkCore.InMemory.ValueGeneration.Internal;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.EntityFrameworkCore.Update;
 using System;
@@ -15,72 +13,45 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using EntityFrameworkCore.LocalStorage.FileManager;
 
-namespace EntityFrameworkCore.LocalStorage
+namespace EntityFrameworkCore.LocalStorage.Storage.Internal
 {
-    public interface IFileContextTableExists
+    public class SerializableTable<TKey> : ISerializableTable
     {
-        public bool Exists(IUpdateEntry entry);
-    }
-
-    public class LocalStorageTable<TKey> : IFileContextTable, IFileContextTableExists
-    {
-        private readonly Microsoft.EntityFrameworkCore.ChangeTracking.Internal.IPrincipalKeyValueFactory<TKey> _keyValueFactory;
+        // WARNING: The in-memory provider is using EF internal code here. This should not be copied by other providers. See #15096
+        private readonly IPrincipalKeyValueFactory<TKey> _keyValueFactory;
         private readonly bool _sensitiveLoggingEnabled;
         private readonly IEntityType _entityType;
-        private readonly IFileContextScopedOptions _options;
+        private readonly IStoreManager _storeManager;
         private readonly Dictionary<TKey, object[]> _rows;
-        private readonly ISyncLocalStorageService _localStorage;
 
-        private IFileManager fileManager;
-        private ISerializer serializer;
-        private string filetype;
+        private Dictionary<int, IInMemoryIntegerValueGenerator> _integerGenerators;
 
-        private Dictionary<int, IFileContextIntegerValueGenerator> _integerGenerators;
-
-        /// <summary>
-        ///     This is an internal API that supports the Entity Framework Core infrastructure and not subject to
-        ///     the same compatibility standards as public APIs. It may be changed or removed without notice in
-        ///     any release. You should only use it directly in your code with extreme caution and knowing that
-        ///     doing so can result in application failures when updating to a new Entity Framework Core release.
-        /// </summary>
-        public LocalStorageTable(
-            // WARNING: The in-memory provider is using EF internal code here. This should not be copied by other providers. See #15096
-            [NotNull] Microsoft.EntityFrameworkCore.ChangeTracking.Internal.IPrincipalKeyValueFactory<TKey> keyValueFactory,
-            bool sensitiveLoggingEnabled,
+        public SerializableTable(
             IEntityType entityType,
-            IFileContextScopedOptions options,
-            ISyncLocalStorageService localStorage)
+            bool sensitiveLoggingEnabled,
+            IStoreManager storeManager)
         {
-            _keyValueFactory = keyValueFactory;
+            _keyValueFactory = entityType.FindPrimaryKey().GetPrincipalKeyValueFactory<TKey>();
             _sensitiveLoggingEnabled = sensitiveLoggingEnabled;
             _entityType = entityType;
-            _options = options;
-            _localStorage = localStorage;
+            _storeManager = storeManager;
 
             _rows = Init();
-            //_rows = new Dictionary<TKey, object[]>(keyValueFactory.EqualityComparer);
         }
 
-        /// <summary>
-        ///     This is an internal API that supports the Entity Framework Core infrastructure and not subject to
-        ///     the same compatibility standards as public APIs. It may be changed or removed without notice in
-        ///     any release. You should only use it directly in your code with extreme caution and knowing that
-        ///     doing so can result in application failures when updating to a new Entity Framework Core release.
-        /// </summary>
-        public virtual FileContextIntegerValueGenerator<TProperty> GetIntegerValueGenerator<TProperty>(IProperty property)
+        public virtual InMemoryIntegerValueGenerator<TProperty> GetIntegerValueGenerator<TProperty>(IProperty property)
         {
             if (_integerGenerators == null)
             {
-                _integerGenerators = new Dictionary<int, IFileContextIntegerValueGenerator>();
+                _integerGenerators = new Dictionary<int, IInMemoryIntegerValueGenerator>();
             }
 
             // WARNING: The in-memory provider is using EF internal code here. This should not be copied by other providers. See #15096
             var propertyIndex = Microsoft.EntityFrameworkCore.Metadata.Internal.PropertyBaseExtensions.GetIndex(property);
             if (!_integerGenerators.TryGetValue(propertyIndex, out var generator))
             {
-                generator = new FileContextIntegerValueGenerator<TProperty>(propertyIndex);
+                generator = new InMemoryIntegerValueGenerator<TProperty>(propertyIndex);
                 _integerGenerators[propertyIndex] = generator;
 
                 foreach (var row in _rows.Values)
@@ -89,15 +60,10 @@ namespace EntityFrameworkCore.LocalStorage
                 }
             }
 
-            return (FileContextIntegerValueGenerator<TProperty>)generator;
+            return (InMemoryIntegerValueGenerator<TProperty>)generator;
         }
 
-        /// <summary>
-        ///     This is an internal API that supports the Entity Framework Core infrastructure and not subject to
-        ///     the same compatibility standards as public APIs. It may be changed or removed without notice in
-        ///     any release. You should only use it directly in your code with extreme caution and knowing that
-        ///     doing so can result in application failures when updating to a new Entity Framework Core release.
-        /// </summary>
+
         public virtual IReadOnlyList<object[]> SnapshotRows()
             => _rows.Values.ToList();
 
@@ -107,12 +73,7 @@ namespace EntityFrameworkCore.LocalStorage
         private static ValueComparer GetStructuralComparer(IProperty p)
             => p.GetStructuralValueComparer() ?? p.FindTypeMapping()?.StructuralComparer;
 
-        /// <summary>
-        ///     This is an internal API that supports the Entity Framework Core infrastructure and not subject to
-        ///     the same compatibility standards as public APIs. It may be changed or removed without notice in
-        ///     any release. You should only use it directly in your code with extreme caution and knowing that
-        ///     doing so can result in application failures when updating to a new Entity Framework Core release.
-        /// </summary>
+
         public virtual void Create(IUpdateEntry entry)
         {
             var row = entry.EntityType.GetProperties()
@@ -124,18 +85,7 @@ namespace EntityFrameworkCore.LocalStorage
             BumpValueGenerators(row);
         }
 
-        public bool Exists(IUpdateEntry entry)
-        {
-            var key = CreateKey(entry);
-            return _rows.ContainsKey(key);
-        }
 
-        /// <summary>
-        ///     This is an internal API that supports the Entity Framework Core infrastructure and not subject to
-        ///     the same compatibility standards as public APIs. It may be changed or removed without notice in
-        ///     any release. You should only use it directly in your code with extreme caution and knowing that
-        ///     doing so can result in application failures when updating to a new Entity Framework Core release.
-        /// </summary>
         public virtual void Delete(IUpdateEntry entry)
         {
             var key = CreateKey(entry);
@@ -159,7 +109,7 @@ namespace EntityFrameworkCore.LocalStorage
             }
             else
             {
-                throw new DbUpdateConcurrencyException(FileContextStrings.UpdateConcurrencyException, new[] { entry });
+                throw new DbUpdateConcurrencyException(InMemoryStrings.UpdateConcurrencyException, new[] { entry });
             }
         }
 
@@ -182,12 +132,7 @@ namespace EntityFrameworkCore.LocalStorage
             return false;
         }
 
-        /// <summary>
-        ///     This is an internal API that supports the Entity Framework Core infrastructure and not subject to
-        ///     the same compatibility standards as public APIs. It may be changed or removed without notice in
-        ///     any release. You should only use it directly in your code with extreme caution and knowing that
-        ///     doing so can result in application failures when updating to a new Entity Framework Core release.
-        /// </summary>
+
         public virtual void Update(IUpdateEntry entry)
         {
             var key = CreateKey(entry);
@@ -222,7 +167,7 @@ namespace EntityFrameworkCore.LocalStorage
             }
             else
             {
-                throw new DbUpdateConcurrencyException(FileContextStrings.UpdateConcurrencyException, new[] { entry });
+                throw new DbUpdateConcurrencyException(InMemoryStrings.UpdateConcurrencyException, new[] { entry });
             }
         }
 
@@ -249,7 +194,7 @@ namespace EntityFrameworkCore.LocalStorage
 
         public void Save()
         {
-            UpdateMethod(_rows);
+            _storeManager.Serialize(ConvertToProvider(_rows));
         }
 
         /// <summary>
@@ -257,13 +202,13 @@ namespace EntityFrameworkCore.LocalStorage
         /// </summary>
         /// <param name="entry"> The update entry which resulted in the conflict(s). </param>
         /// <param name="concurrencyConflicts"> The conflicting properties with their associated database values. </param>
-        protected virtual void ThrowUpdateConcurrencyException([NotNull] IUpdateEntry entry, [NotNull] Dictionary<IProperty, object> concurrencyConflicts)
+        protected virtual void ThrowUpdateConcurrencyException(IUpdateEntry entry, Dictionary<IProperty, object> concurrencyConflicts)
         {
 
             if (_sensitiveLoggingEnabled)
             {
                 throw new DbUpdateConcurrencyException(
-                    FileContextStrings.UpdateConcurrencyTokenExceptionSensitive(
+                    InMemoryStrings.UpdateConcurrencyTokenExceptionSensitive(
                         entry.EntityType.DisplayName(),
                         entry.BuildCurrentValuesString(entry.EntityType.FindPrimaryKey().Properties),
                         entry.BuildOriginalValuesString(concurrencyConflicts.Keys),
@@ -272,72 +217,16 @@ namespace EntityFrameworkCore.LocalStorage
             }
 
             throw new DbUpdateConcurrencyException(
-                FileContextStrings.UpdateConcurrencyTokenException(
+                InMemoryStrings.UpdateConcurrencyTokenException(
                     entry.EntityType.DisplayName(),
                     concurrencyConflicts.Keys.Format()),
                 new[] { entry });
         }
 
-        private void InitSerializer()
-        {
-            if (_options.Serializer == "xml")
-            {
-                serializer = new XMLSerializer<TKey>(_entityType, _keyValueFactory);
-            }
-            else if (_options.Serializer == "bson")
-            {
-                serializer = new BSONSerializer<TKey>(_entityType, _keyValueFactory);
-            }
-            else if (_options.Serializer == "csv")
-            {
-                serializer = new CSVSerializer<TKey>(_entityType, _keyValueFactory);
-            }
-            else
-            {
-                serializer = new JSONSerializer<TKey>(_entityType, _keyValueFactory);
-            }
-        }
-
-        private Action<Dictionary<TKey, object[]>> UpdateMethod;
-
-        private void InitFileManager()
-        {
-            string fmgr = _options.FileManager ?? "default";
-
-            if (fmgr.Length >= 9 && fmgr.Substring(0, 9) == "encrypted")
-            {
-                string password = "";
-
-                if (fmgr.Length > 9)
-                {
-                    password = fmgr.Substring(10);
-                }
-
-                fileManager = new EncryptedLocalStorageFileManager(_entityType, filetype, password, _options.DatabaseName, _localStorage);
-            }
-            else
-            {
-                fileManager = new LocalStorageFileManager(_entityType, filetype, _options.DatabaseName, _localStorage);
-            }
-        }
-
         private Dictionary<TKey, object[]> Init()
         {
-            filetype = _options.Serializer ?? "json";
-
-            InitSerializer();
-            InitFileManager();
-
-            UpdateMethod = new Action<Dictionary<TKey, object[]>>((list) =>
-            {
-                string cnt = serializer.Serialize(ConvertToProvider(list));
-                fileManager.SaveContent(cnt);
-            });
-
-            string content = fileManager.LoadContent();
             Dictionary<TKey, object[]> newList = new Dictionary<TKey, object[]>(_keyValueFactory.EqualityComparer);
-            Dictionary<TKey, object[]> result = ConvertFromProvider(serializer.Deserialize(content, newList));
-            return result;
+            return ConvertFromProvider(_storeManager.Deserialize(newList));
         }
 
         private Dictionary<TKey, object[]> ApplyValueConverter(Dictionary<TKey, object[]> list, Func<ValueConverter, Func<object, object>> conversionFunc)
@@ -364,5 +253,14 @@ namespace EntityFrameworkCore.LocalStorage
         {
             return ApplyValueConverter(list, converter => converter.ConvertFromProvider);
         }
+
+
+        public bool Exists(IUpdateEntry entry)
+        {
+            var key = CreateKey(entry);
+            return _rows.ContainsKey(key);
+        }
     }
 }
+
+

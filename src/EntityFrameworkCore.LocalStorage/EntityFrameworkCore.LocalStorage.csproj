@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Version>1.0.7</Version>
+    <Version>2.0.0</Version>
     <Company></Company>
     <Authors>David Ikin</Authors>
     <Description>Blazor WebAssembly LocalStorage</Description>
@@ -16,19 +16,24 @@
     <PackageProjectUrl>https://github.com/morrisjdev/EntityFrameworkCore.LocalStorage</PackageProjectUrl>
     <NeutralLanguage>en-US</NeutralLanguage>
     <DelaySign>false</DelaySign>
-    <AssemblyVersion>1.0.7.0</AssemblyVersion>
-    <FileVersion>1.0.7.0</FileVersion>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="LocalStorageContextStore.cs" />
+    <Compile Remove="LocalStorageStoreCache.cs" />
+    <Compile Remove="LocalStorageTable.cs" />
+    <Compile Remove="LocalStorageTableFactory.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="2.1.1" />
     <PackageReference Include="CsvHelper" Version="12.1.3" />
-    <PackageReference Include="EPPlus" Version="4.5.3.2" />
-    <PackageReference Include="FileContextCore" Version="3.2.2" />
-    <PackageReference Include="JetBrains.Annotations" Version="2019.1.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.4" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="Newtonsoft.Json.Bson" Version="1.0.2" />
     <PackageReference Include="System.Xml.XmlSerializer" Version="4.3.0" />
