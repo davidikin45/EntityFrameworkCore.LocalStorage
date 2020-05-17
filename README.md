@@ -35,6 +35,12 @@ services.AddDbContext<AppDbContext>(options =>
 });
 ```
 
+```
+<PropertyGroup>
+  <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
+</PropertyGroup>
+```
+
 ## Authors
 
 * **Dave Ikin** - [davidikin45](https://github.com/davidikin45)
