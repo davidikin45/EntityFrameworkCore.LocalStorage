@@ -18,20 +18,20 @@ namespace BethanysPieShopHRM.ClientApp
             //services.AddSingleton<IIndexedDbFactory, IndexedDbFactory>();
             //services.AddSingleton<AppIndexedDb>(sp => sp.GetRequiredService<IIndexedDbFactory>().Create<AppIndexedDb>().Result);
 
-            //services.AddDbContext<AppDbContext>(options =>
-            //{
-            //    options.UseLocalStorageDatabase(services.GetJSRuntime(), databaseName: "db");
-            //});
+            services.AddDbContext<AppDbContext>(options =>
+            {
+                options.UseLocalStorageDatabase(services.GetJSRuntime(), databaseName: "db");
+            });
 
             //services.AddDbContext<AppDbContext>(options =>
             //{
             //    options.UseLocalStorageDatabase(services.GetJSRuntime(), databaseName: "db", password: "password");
             //});
 
-            services.AddDbContext<AppDbContext>(options =>
-            {
-                options.UseInMemoryDatabase(databaseName: "db");
-            });
+            //services.AddDbContext<AppDbContext>(options =>
+            //{
+            //    options.UseInMemoryDatabase(databaseName: "db");
+            //});
 
             //Spinner
             services.AddScoped<ISpinnerService, SpinnerService>();
