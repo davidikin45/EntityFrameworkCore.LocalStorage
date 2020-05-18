@@ -24,7 +24,7 @@ PM> Install-Package EntityFrameworkCore.LocalStorage
 services.AddDbContext<AppDbContext>(options =>
 {
 	options.UseLocalStorageDatabase(services.GetJSRuntime(), databaseName: "db");
-});
+}, ServiceLifetime.Transient);
 ```
 
 ```
@@ -32,7 +32,7 @@ services.AddDbContext<AppDbContext>(options =>
 {
 	//As the encryption happens on the client side this is NOT secure but is handy for preventing users from altering data via browser tools.
 	options.UseLocalStorageDatabase(services.GetJSRuntime(), databaseName: "db", password: "password");
-});
+}, ServiceLifetime.Transient);
 ```
 
 ```
@@ -56,6 +56,16 @@ services.AddDbContext<AppDbContext>(options =>
 </linker>
 ```
 
+## InMemory Provider Recipes
+
+* Microsoft.EntityFrameworkCore.InMemory
+```
+ services.AddDbContext<AppDbContext>(options =>
+{
+	options.UseInMemoryDatabase(databaseName: "db");
+}, ServiceLifetime.Transient);
+```
+
 ## Authors
 
 * **Dave Ikin** - [davidikin45](https://github.com/davidikin45)
@@ -74,3 +84,4 @@ This project is licensed under the MIT License
 * [FileContextCore](https://github.com/morrisjdev/FileContextCore)
 * [Blazored LocalStorage](https://github.com/Blazored/LocalStorage)
 * [Reshiru.Blazor.IndexedDB.Framework](https://github.com/Reshiru/Blazor.IndexedDB.Framework)
+* [Blazor EF Core DI](https://docs.microsoft.com/en-us/aspnet/core/blazor/dependency-injection?view=aspnetcore-3.1)

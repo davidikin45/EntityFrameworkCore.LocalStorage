@@ -1,6 +1,7 @@
 using BethanysPieShopHRM.ClientApp.Interceptors;
 using BethanysPieShopHRM.ClientApp.Services;
 using EntityFrameworkCore.LocalStorage;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,20 +19,28 @@ namespace BethanysPieShopHRM.ClientApp
             //services.AddSingleton<IIndexedDbFactory, IndexedDbFactory>();
             //services.AddSingleton<AppIndexedDb>(sp => sp.GetRequiredService<IIndexedDbFactory>().Create<AppIndexedDb>().Result);
 
+            //https://docs.microsoft.com/en-us/aspnet/core/blazor/dependency-injection?view=aspnetcore-3.1
             services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseLocalStorageDatabase(services.GetJSRuntime(), databaseName: "db");
-            });
+            }, ServiceLifetime.Transient);
 
             //services.AddDbContext<AppDbContext>(options =>
             //{
             //    options.UseLocalStorageDatabase(services.GetJSRuntime(), databaseName: "db", password: "password");
-            //});
+            //}, ServiceLifetime.Transient);
 
             //services.AddDbContext<AppDbContext>(options =>
             //{
             //    options.UseInMemoryDatabase(databaseName: "db");
-            //});
+            //}, ServiceLifetime.Transient);
+
+            //var connection = new SqliteConnection("DataSource=:memory:");
+            //connection.Open();
+            //services.AddDbContext<AppDbContext>(options =>
+            //{
+            //    options.UseSqlite(connection);
+            //}, ServiceLifetime.Singleton);
 
             //Spinner
             services.AddScoped<ISpinnerService, SpinnerService>();

@@ -18,6 +18,8 @@ namespace EntityFrameworkCore.LocalStorage.Infrastructure.Internal
             _options = options;
         }
 
+        public virtual LocalStorageOptions Options => _options;
+
         public virtual DbContextOptionsExtensionInfo Info
             => _info ??= new ExtensionInfo(this);
 
@@ -51,6 +53,10 @@ namespace EntityFrameworkCore.LocalStorage.Infrastructure.Internal
                     {
                         var builder = new StringBuilder();
 
+                        builder.Append("Serializer=").Append(Extension.Options.Serializer).Append(' ');
+
+                        if(!string.IsNullOrEmpty(Extension.Options.Password))
+                            builder.Append("Password=").Append("<Password>").Append(' ');
 
                         _logFragment = builder.ToString();
                     }
