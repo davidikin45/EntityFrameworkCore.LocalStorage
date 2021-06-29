@@ -6,7 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Globalization;
 
 namespace EntityFrameworkCore.LocalStorage.Serializer
 {
@@ -33,7 +34,7 @@ namespace EntityFrameworkCore.LocalStorage.Serializer
             }
 
             TextReader tr = new StringReader(list);
-            CsvReader reader = new CsvReader(tr);
+            CsvReader reader = new CsvReader(tr, CultureInfo.CurrentCulture);
 
             reader.Read();
             reader.ReadHeader();
@@ -60,7 +61,7 @@ namespace EntityFrameworkCore.LocalStorage.Serializer
         public string Serialize<TKey>(Dictionary<TKey, object[]> list)
         {
             StringWriter sw = new StringWriter();
-            CsvWriter writer = new CsvWriter(sw);
+            CsvWriter writer = new CsvWriter(sw, CultureInfo.CurrentCulture);
 
             for (int i = 0; i < propertyKeys.Length; i++)
             {
