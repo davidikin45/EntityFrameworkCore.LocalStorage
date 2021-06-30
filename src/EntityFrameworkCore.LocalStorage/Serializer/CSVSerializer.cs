@@ -34,7 +34,7 @@ namespace EntityFrameworkCore.LocalStorage.Serializer
             }
 
             TextReader tr = new StringReader(list);
-            CsvReader reader = new CsvReader(tr, CultureInfo.CurrentCulture);
+            CsvReader reader = new CsvReader(tr, CultureInfo.InvariantCulture);
 
             reader.Read();
             reader.ReadHeader();
@@ -61,7 +61,7 @@ namespace EntityFrameworkCore.LocalStorage.Serializer
         public string Serialize<TKey>(Dictionary<TKey, object[]> list)
         {
             StringWriter sw = new StringWriter();
-            CsvWriter writer = new CsvWriter(sw, CultureInfo.CurrentCulture);
+            CsvWriter writer = new CsvWriter(sw, CultureInfo.InvariantCulture);
 
             for (int i = 0; i < propertyKeys.Length; i++)
             {
