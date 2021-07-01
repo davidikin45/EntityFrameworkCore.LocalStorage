@@ -1,8 +1,9 @@
 ﻿using Blazored.LocalStorage;
 using EntityFrameworkCore.LocalStorage.FileManager;
 using EntityFrameworkCore.LocalStorage.Serializer;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Collections.Generic;
 
 namespace EntityFrameworkCore.LocalStorage.StoreManager

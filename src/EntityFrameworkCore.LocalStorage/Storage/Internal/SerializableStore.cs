@@ -36,7 +36,8 @@ namespace EntityFrameworkCore.LocalStorage.Storage.Internal
                 var entityType = property.DeclaringEntityType;
                 var key = _useNameMatching ? (object)entityType.Name : entityType;
 
-                return EnsureTable(key, entityType).GetIntegerValueGenerator<TProperty>(property);
+                return EnsureTable(key, entityType).GetIntegerValueGenerator<TProperty>(property,
+                        _tables.Values.ToList().AsReadOnly());
             }
         }
 
@@ -199,7 +200,7 @@ namespace EntityFrameworkCore.LocalStorage.Storage.Internal
 
             if (!_tables.TryGetValue(key, out var table))
             {
-                _tables.Add(key, table = (ISerializableTable)_tableFactory.Create(entityType));
+                _tables.Add(key, table = (ISerializableTable)_tableFactory.Create(entityType, null));
             }
 
             return table;
